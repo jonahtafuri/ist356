@@ -5,22 +5,26 @@ def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
-    page.goto("https://en.wikipedia.org/wiki/National_Football_League")
+    page.goto("https://ist256.com/fall2023/syllabus/")
 
     # Let's scrape the page!
     # use pandas read_html to parse the HTML
 
     # get a list of all tables on the page
-    dfs = pd.read_html(page.content())
+    start_element = page.query_selector("h4#criteria-for-project-grade")
+    next_element = start_element.query_selector("~ *")
+    bullet_elements = next_element.query_selector_all("li")
+    
+    criteria = []
+    for element in bullet_elements:
+        criteria.append(element.inner_text())
 
-    # print the first table
-    df_teams = dfs[2]
-    df_teams.to_csv("nfl_teams.csv, index=False")
-    print(dfs[2])
-    # ---------------------
+
     context.close()
     browser.close()
-
+    
+    return criteria
 
 with sync_playwright() as playwright:
-    run(playwright)
+    criteria = run(playwright)
+    print(criteria)

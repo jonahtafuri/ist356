@@ -8,7 +8,7 @@ def run(playwright: Playwright) -> None:
     page.goto("https://www.imdb.com/chart/top/")
 
     # Let's scrape the heading off the page!
-    heading = page.query_selector("h1")
+    heading = page.query_selector("h1.ipc-title__text")
 
     # the tag name of the element
     tag =heading.evaluate("el => el.tagName")
